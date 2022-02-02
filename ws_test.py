@@ -1,7 +1,27 @@
 from websocket import create_connection, enableTrace
 import json
+import ssl
 
 enableTrace(True)
+
+my_context = ssl.create_default_context()
+try:
+    print('loading cacert.pem')
+    my_context.load_verify_locations('cacert.pem')
+except:
+    print('failed')
+
+try:
+    print('loading custom.pem')
+    my_context.load_verify_locations('custom.pem')
+except:
+    print('failed')
+
+try:
+    print('loading custom.cer')
+    my_context.load_verify_locations('custom.cer')
+except:
+    print('failed')
 
 requestId = 1
 
@@ -24,7 +44,7 @@ def run_test(endpoint):
 
     try:
         print("connecting")
-        ws = create_connection(endpoint)
+        ws = create_connection(endpoint,sslopt={'context':my_context})
         print("connected")
 
         try:
